@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { nanoid } from 'nanoid';
+
+import ContactForm from './сontactForm/ContactForm';
+import Filter from './filter/Filter';
+import ContactList from './contactList/ContactList';
 
 class App extends Component {
   state = {
@@ -10,87 +13,51 @@ class App extends Component {
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
     filter: '',
-    name: '',
-    number: '',
   };
 
-  handleChange = e => {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
-  };
+  addContact = newContact => {
+    const isExistContact = this.state.contacts.some(
+      contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
+    );
 
-  handleSubmit = e => {
-    e.preventDefault();
-
-    this.setState(prevState => {
-      const { name, number } = prevState;
-      return {
-        contacts: [...prevState.contacts, { id: nanoid(), name, number }],
-        name: '',
-        number: '',
-      };
-    });
+    if (isExistContact) {
+      alert(`${newContact.name} is already in contacts.`);
+      return;
+    }
+    this.setState(prevState => ({
+      contacts: [...prevState.contacts, newContact],
+    }));
   };
 
   filterChange = e => {
     this.setState({ filter: e.target.value });
   };
+
+  deleteContact = contactId => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(
+        contact => contact.id !== contactId.id
+      ),
+    }));
+  };
   render() {
     return (
       <>
         <div>
-          <h2>Phonebook</h2>
-          <form onSubmit={this.handleSubmit}>
-            <label>
-              Name
-              <input
-                type="text"
-                name="name"
-                value={this.state.name}
-                pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-                title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-                onChange={this.handleChange}
-                required
-              />
-            </label>
-            <label>
-              Number
-              <input
-                type="tel"
-                name="number"
-                value={this.state.number}
-                pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-                title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-                onChange={this.handleChange}
-                required
-              />
-            </label>
-            <button type="submit">Add contact</button>
-          </form>
+          <h1>Phonebook</h1>
         </div>
-
+        <ContactForm
+          addContact={this.addContact}
+          contacts={this.state.contacts}
+        />
         <div>
           <h2>Contacts</h2>
-          <label>
-            Find contacts by name
-            <input
-              type="text"
-              value={this.state.filter}
-              onChange={this.filterChange}
-            />
-          </label>
-          <ul>
-            {this.state.contacts.map(
-              ({ id, name, number }) =>
-                name
-                  .toLowerCase()
-                  .includes(this.state.filter.toLowerCase()) && (
-                  <li key={id}>
-                    {name}: {number}
-                  </li>
-                )
-            )}
-          </ul>
+          <Filter value={this.state.filter} onChange={this.filterChange} />
+          <ContactList
+            onDelete={this.deleteContact}
+            filter={this.state.filter}
+            contacts={this.state.contacts}
+          />
         </div>
       </>
     );
