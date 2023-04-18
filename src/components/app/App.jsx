@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-
-import ContactForm from './сontactForm/ContactForm';
-import Filter from './filter/Filter';
-import ContactList from './contactList/ContactList';
+import css from './App.module.css';
+import ContactForm from '../сontactForm/ContactForm';
+import Filter from '../filter/Filter';
+import ContactList from '../contactList/ContactList';
 
 class App extends Component {
   state = {
@@ -42,16 +42,16 @@ class App extends Component {
   };
   render() {
     return (
-      <>
+      <div className={css.main}>
         <div>
-          <h1>Phonebook</h1>
+          <h1 className={css.title}>Phonebook</h1>
         </div>
         <ContactForm
           addContact={this.addContact}
           contacts={this.state.contacts}
         />
         <div>
-          <h2>Contacts</h2>
+          <h2 className={css.title}>Contacts</h2>
           <Filter value={this.state.filter} onChange={this.filterChange} />
           <ContactList
             onDelete={this.deleteContact}
@@ -59,7 +59,7 @@ class App extends Component {
             contacts={this.state.contacts}
           />
         </div>
-      </>
+      </div>
     );
   }
 }

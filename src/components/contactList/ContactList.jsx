@@ -1,9 +1,9 @@
 import ContactItem from 'components/contactItem/ContactItem';
 import PropTypes from 'prop-types';
-
+import css from './ContactList.module.css';
 const ContactList = ({ contacts, filter, onDelete }) => {
   return (
-    <ul>
+    <ul className={css.list}>
       {contacts.map(
         ({ id, name, number }) =>
           name.toLowerCase().includes(filter.toLowerCase()) && (
